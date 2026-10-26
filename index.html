@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Easylearn</title>
+  <meta name="description" content="Easylearn — застосунок для підготовки до екзаменів і читання великих файлів. Щоденна ціль, борг за недочитане, 14 форматів, офлайн. Android 13+.">
+  <meta name="theme-color" content="#0a1120">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('el-theme'); } catch (e) {}
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=JetBrains+Mono:wght@400;500;700&family=Literata:ital,opsz,wght@1,7..72,300..500&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="blobs" aria-hidden="true">
+  <i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4" id="blobCursor"></i>
+</div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <a class="nav-logo" href="#top" aria-label="Easylearn">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 4.5h5.2A3.8 3.8 0 0 1 12 8.3v12a3 3 0 0 0-3-3H3z M21 4.5h-5.2A3.8 3.8 0 0 0 12 8.3v12a3 3 0 0 1 3-3h6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    <span>Easylearn</span>
+  </a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#mechanics" class="hud"><span data-i18n="nav1">Механіка</span></a>
+    <a href="#screens" class="hud"><span data-i18n="nav2">Екрани</span></a>
+    <a href="#reader" class="hud"><span data-i18n="nav3">Ридер</span></a>
+    <a href="#formats" class="hud"><span data-i18n="nav4">Формати</span></a>
+    <a href="#inside" class="hud"><span data-i18n="nav5">Під капотом</span></a>
+  </nav>
+  <div class="nav-right">
+    <div class="nav-lang" role="group" aria-label="Language">
+      <button class="hud" data-lang="uk">UA</button>
+      <button class="hud" data-lang="en">EN</button>
+    </div>
+    <button class="nav-icon" id="themeBtn" aria-label="Theme">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>
+    </button>
+    <a class="nav-cta" href="download/easylearn.apk" download><span data-i18n="navCta">Завантажити APK</span></a>
+    <button class="nav-icon nav-burger" id="burger" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+  </div>
+</header>
+<div class="mobile-nav" id="mobileNav">
+  <a href="#mechanics"><i class="hud">01</i><span data-i18n="nav1">Механіка</span></a>
+  <a href="#screens"><i class="hud">02</i><span data-i18n="nav2">Екрани</span></a>
+  <a href="#reader"><i class="hud">03</i><span data-i18n="nav3">Ридер</span></a>
+  <a href="#formats"><i class="hud">05</i><span data-i18n="nav4">Формати</span></a>
+  <a href="#inside"><i class="hud">06</i><span data-i18n="nav5">Під капотом</span></a>
+  <div class="mobile-nav-lang"><button class="hud" data-lang="uk">UA</button><button class="hud" data-lang="en">EN</button></div>
+  <a href="download/easylearn.apk" download class="mobile-nav-cta"><span data-i18n="navCta">Завантажити APK</span></a>
+</div>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas class="hero-canvas" id="pagesCanvas" aria-hidden="true"></canvas>
+    <div class="hero-content">
+      <div class="hero-halo" aria-hidden="true"></div>
+      <div class="wordmark" id="wordmark" role="img" aria-label="EASYLEARN">EASYLEARN</div>
+      <h1 class="hero-title" data-reveal>
+        <span data-i18n="heroTitleA">Читай щодня.</span>
+        <em data-i18n="heroTitleB">Без хвостів.</em>
+      </h1>
+      <p class="hero-sub" data-reveal data-i18n="heroSub">Додай підручник чи книжку, задай ціль на день — Easylearn порахує дедлайн, перенесе недочитане на завтра і нагадає, поки ціль не закрита.</p>
+      <div class="hero-cta" data-reveal>
+        <a class="btn btn-solid" href="download/easylearn.apk" download>
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>
+          <span data-i18n="ctaApk">Завантажити APK</span>
+        </a>
+        <a class="btn btn-line" href="#mechanics"><span data-i18n="ctaHow">Як це працює</span></a>
+      </div>
+      <div class="hero-meta hud" data-reveal>
+        <span>Android 13+</span><span class="dot"></span>
+        <span data-i18n="metaOffline">Офлайн, без акаунта</span><span class="dot"></span>
+        <span data-i18n="metaLang">Українська · English</span>
+      </div>
+    </div>
+    <div class="hero-hud hud" aria-live="polite">
+      <span class="hero-hud-label" data-i18n="hudLabel">Наведи на сторінки</span>
+      <span class="hero-hud-goal"><b data-i18n="hudGoal">Ціль</b> <span id="hudRead">0</span> / 20</span>
+      <span class="hero-hud-bar"><i id="hudBar"></i></span>
+    </div>
+    <div class="hero-scroll hud" aria-hidden="true"><span data-i18n="scroll">Гортай</span> ↓</div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <ul class="marquee-track" id="marquee"></ul>
+    <ul class="marquee-track" id="marquee2"></ul>
+  </div>
+
+  <!-- 01 MECHANICS -->
+  <section class="sec" id="mechanics">
+    <div class="frame">
+      <span class="tick tl"></span><span class="tick tr"></span>
+      <div class="eyebrow"><p class="hud"><span class="faint">01</span><span class="faint sl">/</span><span data-i18n="e1">Механіка цілей і боргу</span></p><p class="hud faint hide-sm" data-i18n="e1r">Спробуй сам — тягни стовпчики</p></div>
+      <div class="sec-head">
+        <h2 data-reveal><span data-i18n="h1a">Недочитане не зникає.</span> <em data-i18n="h1b">Воно чекає на завтра.</em></h2>
+        <p class="lead" data-reveal data-i18n="p1">Прочитав 18 із 20 — завтра ціль 22. Прочитав 26 — завтра лише 14. Дні, коли ти взагалі не відкривав курс, боргу не створюють.</p>
+      </div>
+
+      <div class="sim" data-reveal>
+        <div class="sim-bar">
+          <div class="sim-ctl">
+            <span class="hud muted" data-i18n="simTarget">Ціль на день</span>
+            <div class="stepper">
+              <button id="tMinus" aria-label="−">−</button>
+              <output id="tVal">20</output>
+              <button id="tPlus" aria-label="+">+</button>
+            </div>
+          </div>
+          <div class="sim-presets">
+            <button class="chip hud" data-preset="steady" data-i18n="pr1">Рівний тиждень</button>
+            <button class="chip hud" data-preset="lazy" data-i18n="pr2">Лінивий старт</button>
+            <button class="chip hud" data-preset="sprint" data-i18n="pr3">Ривок</button>
+          </div>
+        </div>
+        <div class="sim-chart" id="simChart" aria-label="7-day simulation"></div>
+        <div class="sim-foot">
+          <div class="sim-stat"><span class="hud muted" data-i18n="sRead">Прочитано за тиждень</span><b id="sRead">0</b></div>
+          <div class="sim-stat"><span class="hud muted" data-i18n="sBal">Баланс на понеділок</span><b id="sBal">0</b></div>
+          <div class="sim-stat"><span class="hud muted" data-i18n="sNext">Ціль наступного дня</span><b id="sNext">20</b></div>
+          <div class="sim-stat"><span class="hud muted" data-i18n="sDays">До кінця курсу · 388 стор.</span><b id="sDays">—</b></div>
+        </div>
+        <pre class="sim-code" id="simCode" aria-hidden="true"></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 SCREENS (pinned horizontal) -->
+  <section class="gallery" id="screens">
+    <div class="gallery-pin">
+      <div class="frame frame-fill">
+        <div class="eyebrow"><p class="hud"><span class="faint">02</span><span class="faint sl">/</span><span data-i18n="e2">Екрани</span></p><p class="hud faint"><span id="gIdx">01</span> / <span id="gTotal">08</span></p></div>
+        <div class="gallery-head">
+          <h2 data-reveal><span data-i18n="h2a">Три вкладки.</span> <em data-i18n="h2b">Нічого зайвого.</em></h2>
+          <div class="gallery-progress"><i id="gBar"></i></div>
+        </div>
+        <div class="gallery-viewport">
+          <div class="gallery-track" id="gTrack">
+            <figure class="shot">
+              <figcaption class="shot-head"><span class="hud" data-i18n="g1">Головна</span><span class="hud faint">01</span></figcaption>
+              <div class="shot-img"><img src="assets/web/home-with-course.webp" alt="" loading="lazy" width="640" height="1308"></div>
+              <p data-i18n="g1d">Кільце «сьогодні», залишок і борг. Список або мініатюри, сортування за датою, назвою, прогресом.</p>
+            </figure>
+            <figure class="shot">
+              <figcaption class="shot-head"><span class="hud" data-i18n="g2">Новий курс</span><span class="hud faint">02</span></figcaption>
+              <div class="shot-img"><img src="assets/web/add-course.webp" alt="" loading="lazy" width="640" height="1308"></div>
+              <p data-i18n="g2d">Сторінок на день або днів на курс. Превʼю одразу каже: 388 сторінок — це 20 днів.</p>
+            </figure>
+            <figure class="shot">
+              <figcaption class="shot-head"><span class="hud" data-i18n="g3">Ридер</span><span class="hud faint">03</span></figcaption>
+              <div class="shot-img"><img src="assets/web/reader-dark.webp" alt="" loading="lazy" width="640" height="1308"></div>
+              <p data-i18n="g3d">Пігулка «Ціль: 4 / 20» завжди перед очима. Сторінка рахується, коли видно її кінець.</p>
+            </figure>
+            <figure class="shot">
+              <figcaption class="shot-head"><span class="hud" data-i18n="g4">Вихід з боргом</span><span class="hud faint">04</span></figcaption>
+              <div class="shot-img"><img src="assets/web/debt-warning.webp" alt="" loading="lazy" width="640" height="1308"></div>
+              <p data-i18n="g4d">Спробуєш вийти раніше — застосунок чесно скаже, скільки сторінок поїде на завтра.</p>
+            </figure>
+            <figure class="shot">
+              <figcaption class="shot-head"><span class="hud" data-i18n="g5">Ціль закрито</span><span class="hud faint">05</span></figcaption>
+              <div class="shot-img"><img src="assets/web/goal-complete.webp" alt="" loading="lazy" width="640" height="1308"></div>
+              <p data-i18n="g5d">Дочитав до межі — хлопавка з конфеті. Гортати далі не вийде: завтра теж треба щось читати.</p>
+            </figure>
+            <figure class="shot">
+              <figcaption class="shot-head"><span class="hud" data-i18n="g6">Статистика</span><span class="hud faint">06</span></figcaption>
+              <div class="shot-img"><img src="assets/web/stats-dark.webp" alt="" loading="lazy" width="640" height="1308"></div>
+              <p data-i18n="g6d">Загальна і по курсах: прочитано, витрачено днів, залишилось сторінок і днів.</p>
+            </figure>
+            <figure class="shot">
+              <figcaption class="shot-head"><span class="hud" data-i18n="g7">Меню курсу</span><span class="hud faint">07</span></figcaption>
+              <div class="shot-img"><img src="assets/web/reader-menu-dark.webp" alt="" loading="lazy" width="640" height="1308"></div>
+              <p data-i18n="g7d">Довге натискання в стилі Telegram: курс зменшується, фон розмивається, меню під пальцем.</p>
+            </figure>
+            <figure class="shot">
+              <figcaption class="shot-head"><span class="hud" data-i18n="g8">Налаштування</span><span class="hud faint">08</span></figcaption>
+              <div class="shot-img"><img src="assets/web/settings-dark.webp" alt="" loading="lazy" width="640" height="1308"></div>
+              <p data-i18n="g8d">Тема, мова, час нагадування, режим читання за замовчуванням і «Почистити».</p>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 READER -->
+  <section class="sec" id="reader">
+    <div class="frame">
+      <span class="tick tl"></span><span class="tick tr"></span>
+      <div class="eyebrow"><p class="hud"><span class="faint">03</span><span class="faint sl">/</span><span data-i18n="e3">Ридер</span></p><p class="hud faint hide-sm" data-i18n="e3r">PDF з пінч-зумом · текст зі своїм шрифтом</p></div>
+      <div class="reader">
+        <div class="reader-text">
+          <h2 data-reveal><span data-i18n="h3a">Три режими.</span> <em data-i18n="h3b">Три теми.</em></h2>
+          <p class="lead" data-reveal data-i18n="p3">Режим і тему можна задати глобально або окремо для кожного курсу — тоді курс перестає слухатись дефолтів.</p>
+          <ol class="rows" data-reveal>
+            <li><span class="hud faint">A</span><b data-i18n="m1">Як книжка</b><span class="muted" data-i18n="m1d">одне гортання — одна сторінка, без перестрибувань</span></li>
+            <li><span class="hud faint">B</span><b data-i18n="m2">Горизонтально</b><span class="muted" data-i18n="m2d">сторінки стрічкою зліва направо</span></li>
+            <li><span class="hud faint">C</span><b data-i18n="m3">Вертикально</b><span class="muted" data-i18n="m3d">безперервна прокрутка вниз</span></li>
+          </ol>
+          <div class="seg" id="themeSeg" data-reveal role="tablist">
+            <button class="hud active" data-shot="0" role="tab" data-i18n="t1">Світла</button>
+            <button class="hud" data-shot="1" role="tab" data-i18n="t2">Сепія</button>
+            <button class="hud" data-shot="2" role="tab" data-i18n="t3">Темна</button>
+            <i class="seg-pill" aria-hidden="true"></i>
+          </div>
+          <p class="note muted" id="themeNote" data-i18n="tn0">Звичайна сторінка, як у файлі.</p>
+        </div>
+        <div class="reader-phone" id="readerPhone" data-reveal>
+          <div class="reader-card">
+            <img src="assets/web/reader.webp" alt="" class="on" width="640" height="1308" loading="lazy">
+            <img src="assets/web/reader-sepia.webp" alt="" width="640" height="1308" loading="lazy">
+            <img src="assets/web/reader-dark.webp" alt="" width="640" height="1308" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 THEMES compare -->
+  <section class="sec" id="themes">
+    <div class="frame">
+      <span class="tick tl"></span><span class="tick tr"></span>
+      <div class="eyebrow"><p class="hud"><span class="faint">04</span><span class="faint sl">/</span><span data-i18n="e4">Світла і темна</span></p><p class="hud faint hide-sm" data-i18n="e4r">Тягни повзунок</p></div>
+      <div class="compare-wrap">
+        <div class="compare-copy">
+          <h2 data-reveal><span data-i18n="h4a">Скло вдень.</span> <em data-i18n="h4b">Скло вночі.</em></h2>
+          <p class="lead" data-reveal data-i18n="p4">Glassmorphism у двох темах. Якщо не обрав сам — тема і мова підхоплюються з системи й змінюються разом із нею.</p>
+        </div>
+        <div class="compare" id="compare" data-reveal style="--x:50%">
+          <img src="assets/web/home-dark.webp" alt="" width="640" height="1308" loading="lazy" draggable="false">
+          <img src="assets/web/home-light.webp" alt="" class="compare-top" width="640" height="1308" loading="lazy" draggable="false">
+          <div class="compare-handle" role="slider" tabindex="0" aria-label="Light / dark" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span></span></div>
+          <span class="compare-tag hud l" data-i18n="cl">Світла</span>
+          <span class="compare-tag hud r" data-i18n="cd">Темна</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 FORMATS -->
+  <section class="sec" id="formats">
+    <div class="frame">
+      <span class="tick tl"></span><span class="tick tr"></span>
+      <div class="eyebrow"><p class="hud"><span class="faint">05</span><span class="faint sl">/</span><span data-i18n="e5">Формати</span></p><p class="hud faint hide-sm" data-i18n="e5r">Оригінал копіюється, текст витягується один раз</p></div>
+      <div class="sec-head">
+        <h2 data-reveal><span data-i18n="h5a">Те, що задали прочитати.</span> <em data-i18n="h5b">У будь-якому файлі.</em></h2>
+        <p class="lead" data-reveal data-i18n="p5">Кілька PDF можна зібрати в одну збірку — зі спільною нумерацією і одним прогресом.</p>
+      </div>
+      <div class="ftable" data-reveal-group>
+        <div class="frow" data-reveal><b>PDF</b><span data-i18n="fx1">Посторінковий рендер, пінч-зум, збірки з кількох файлів</span><i class="hud">ok</i></div>
+        <div class="frow" data-reveal><b>DOCX · PPTX</b><span data-i18n="fx2">Абзаци документа, тексти слайдів по порядку</span><i class="hud">ok</i></div>
+        <div class="frow" data-reveal><b>EPUB</b><span data-i18n="fx3">Порядок глав зі spine, навігаційні файли пропускаються</span><i class="hud">ok</i></div>
+        <div class="frow" data-reveal><b>FB2 · ZIP</b><span data-i18n="fx4">Вірші, заголовки, стара кирилиця windows-1251, .fb2.zip</span><i class="hud">ok</i></div>
+        <div class="frow" data-reveal><b>ODT · ODP</b><span data-i18n="fx5">Абзаци й заголовки, слайди LibreOffice</span><i class="hud">ok</i></div>
+        <div class="frow" data-reveal><b>TXT · MD · CSV · JSON</b><span data-i18n="fx6">UTF-8 з відкатом на latin1, пагінація під твій шрифт</span><i class="hud">ok</i></div>
+        <div class="frow" data-reveal><b>HTML · RTF</b><span data-i18n="fx7">Теги й керуючі слова прибираються, абзаци лишаються</span><i class="hud">ok</i></div>
+        <div class="frow frow-no" data-reveal><b>DOC · PPT · XLS · MOBI · DJVU</b><span data-i18n="fx8">Не підтримуються — застосунок так і скаже</span><i class="hud">no</i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 INSIDE -->
+  <section class="sec" id="inside">
+    <div class="frame">
+      <span class="tick tl"></span><span class="tick tr"></span>
+      <div class="eyebrow"><p class="hud"><span class="faint">06</span><span class="faint sl">/</span><span data-i18n="e6">Під капотом</span></p><p class="hud faint hide-sm">Flutter 3.44 · Dart 3.12</p></div>
+      <div class="specs" data-reveal-group>
+        <div class="spec" data-reveal><b data-count="0">0</b><span class="hud" data-i18n="sp1">серверів</span><p class="muted" data-i18n="sp1d">Усе лежить у локальній SQLite. Без акаунтів і без інтернету.</p></div>
+        <div class="spec" data-reveal><b data-count="135">0</b><span class="hud" data-i18n="sp2">рядків × 2 мови</span><p class="muted" data-i18n="sp2d">Інтерфейс українською та англійською, мова береться з системи.</p></div>
+        <div class="spec" data-reveal><b data-count="14">0</b><span class="hud" data-i18n="sp3">тестів</span><p class="muted" data-i18n="sp3d">Математика боргу, пагінація, парсери FB2/EPUB/ODT, кодування 1251.</p></div>
+        <div class="spec" data-reveal><b data-count="2">0</b><span class="hud" data-i18n="sp4">год між нагадуваннями</span><p class="muted" data-i18n="sp4d">Пропустив час — наздоганяючі сповіщення до 22:00, поки цілі не закриті.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section class="dl" id="download">
+    <div class="frame">
+      <span class="tick tl"></span><span class="tick tr"></span>
+      <div class="eyebrow"><p class="hud"><span class="faint">07</span><span class="faint sl">/</span><span data-i18n="e7">Завантажити</span></p><p class="hud faint">v1.0.0 · ~54 MB</p></div>
+      <div class="dl-card">
+        <div class="dl-body">
+          <h2 data-reveal><span data-i18n="h7a">Завтрашня ціль</span> <em data-i18n="h7b">залежить від сьогодні.</em></h2>
+          <div class="hero-cta" data-reveal>
+            <a class="btn btn-solid btn-lg" href="download/easylearn.apk" download>
+              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>
+              <span data-i18n="dlBtn">APK для Android</span>
+            </a>
+            <span class="btn btn-line btn-lg is-disabled" data-i18n="dlSoon">Google Play — скоро</span>
+          </div>
+          <p class="hud faint" data-reveal data-i18n="dlMeta">Android 13+ · iOS 15+ у планах · безкоштовно</p>
+        </div>
+        <div class="dl-mark" aria-hidden="true">EASYLEARN</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="frame foot-grid">
+    <div>
+      <a class="nav-logo" href="#top">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 4.5h5.2A3.8 3.8 0 0 1 12 8.3v12a3 3 0 0 0-3-3H3z M21 4.5h-5.2A3.8 3.8 0 0 0 12 8.3v12a3 3 0 0 1 3-3h6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span>Easylearn</span>
+      </a>
+      <p class="muted" data-i18n="footTag">Читалка з бухгалтерією сторінок.</p>
+    </div>
+    <div class="foot-col">
+      <p class="hud faint" data-i18n="fc1">Продукт</p>
+      <a href="#mechanics" data-i18n="nav1">Механіка</a>
+      <a href="#screens" data-i18n="nav2">Екрани</a>
+      <a href="#reader" data-i18n="nav3">Ридер</a>
+    </div>
+    <div class="foot-col">
+      <p class="hud faint" data-i18n="fc2">Ще</p>
+      <a href="#formats" data-i18n="nav4">Формати</a>
+      <a href="#inside" data-i18n="nav5">Під капотом</a>
+      <a href="download/easylearn.apk" download>APK</a>
+    </div>
+  </div>
+  <div class="frame foot-bottom hud faint">
+    <span>© 2026 Easylearn</span>
+    <span>Made with Flutter</span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
